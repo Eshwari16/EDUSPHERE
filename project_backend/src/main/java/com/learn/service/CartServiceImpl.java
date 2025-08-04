@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+
 import javax.management.RuntimeErrorException;
 
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import com.learn.entities.*;
 import com.learn.dto.CartDTO;
 import com.learn.dto.CartItemDTO;
 import com.learn.repository.CartItemRepository;
+
 import com.learn.repository.CartRepository;
 import com.learn.repository.CourseRepository;
 import com.learn.repository.LearnerRepository;
@@ -29,13 +31,17 @@ public class CartServiceImpl implements CartService {
 	
 	private final LearnerRepository learnerRepository;
 	
-	private final CartItemRepository cartItemRepository;
+
+	//private final CartItemRepository cartItemRepository;
+	
 	private final CourseRepository courseRepository;
 	
 	private final ModelMapper modelMapper;
 
 	@Override
+
 	public CartDTO addCourseToCart(Long learnerId, Long courseId) {
+
 		// TODO Auto-generated method stub
 		Learner learner = learnerRepository.findById(learnerId)
 				.orElseThrow(() -> new RuntimeException("Learner not found"));
@@ -66,7 +72,9 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
+
 	public CartDTO removeCourseFromCart(Long learnerId, Long courseId) {
+
 		// TODO Auto-generated method stub
 		Cart cart = cartRepository.findByLearnerId(learnerId)
 				.orElseThrow(() -> new RuntimeException("Cart not found"));
@@ -85,6 +93,7 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public CartDTO getCartByLearner(Long learnerId) {
+
 		// TODO Auto-generated method stub
 		Cart cart = cartRepository.findByLearnerId(learnerId)
 				.orElseThrow(() -> new RuntimeException("Cart not found"));
@@ -93,13 +102,19 @@ public class CartServiceImpl implements CartService {
 		return convertToDTO(cart);
 	}
 
+
 	private void updateCartTotalPrice(Cart cart) {
+
 		double total = cart.getItems().stream()
                 .mapToDouble(item -> item.getCourse().getPrice())
                 .sum();
         cart.setTotalPrice(total);
 	}
+
+	
+	
 	private CartDTO convertToDTO(Cart cart) {
+
 		return new CartDTO(
 				cart.getLearner().getId(),null,
 				cart.getItems().stream().map(item ->new CartItemDTO(
@@ -110,4 +125,24 @@ public class CartServiceImpl implements CartService {
 				cart.getTotalPrice()
 			);
 	}
+
+	
+	/*
+	 @Override
+    public void checkoutCart(Long learnerId) {
+        Cart cart = getCartByLearnerId(learnerId);
+
+        if (cart.getCourses().isEmpty()) {
+            throw new RuntimeException("Cart is empty. Cannot checkout.");
+        }
+
+        // TODO: Business logic for payment and enrollment
+
+        // After successful checkout, clear the cart
+        cart.getCourses().clear();
+        cartRepository.save(cart);
+    }
+    */
+	
+
 }
